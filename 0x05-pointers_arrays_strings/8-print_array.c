@@ -2,28 +2,20 @@
 #include <stdio.h>
 
 /**
- * print_array - prints n elements of an array
- * @a: array of integers
- * @n: number of items to print
- * Return: void
+ * print_array - prints n element of an array of integers
+ * [Prince Solomon]
+ * @a: int to check
+ * @n: int to check
+ * Return: 0 is success
  */
-
 void print_array(int *a, int n)
 {
-	int i, count;
+	int x;
 
-	i = 0;
-	count = 1;
-	if (n < 0)
-	n = 0;
-	if (n > 0)
-	{
-		while (a[i] != '\0' && count < n)
-		{
-			printf("%d, ", a[i]);
-			i++;
-			count++;
-		}
-		printf("%d\n", a[i]);
-	}
+	for (x = 0; x < n; x++)
+		if (x != n - 1)
+			printf("%d, ", a[x]);
+		else
+			printf("%d", a[x]);
+	printf("\n");
 }
