@@ -3,7 +3,7 @@
 
 /**
  * print_array - prints n element of an array of integers
- * [Prince Solomon]
+ * [chesteve77]
  * @a: int to check
  * @n: int to check
  * Return: 0 is success
