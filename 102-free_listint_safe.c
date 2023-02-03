@@ -1,96 +1,72 @@
 #include "lists.h"
-
-size_t looped_listint_count(listint_t *head);
-size_t free_listint_safe(listint_t **h);
+#include <stdlib.h>
+#include <stdio.h>
 
 /**
- * looped_listint_count - Counts the number of unique nodes
- *                      in a looped listint_t linked list.
- * @head: A pointer to the head of the listint_t to check.
- *
- * Return: If the list is not looped - 0.
- *         Otherwise - the number of unique nodes in the list.
+ * _ra - reallocates memory for an array of pointer
+ * to the nodes in a linked list
+ * @list: the old list to append
+ * @size: size of the new list (always one more than the old list)
+ * @new: new node to add to the list
+ * Return: pointer to the new list
  */
-size_t looped_listint_count(listint_t *head)
+listint_t **_ra(listint_t **list, size_t size, listint_t *new)
 {
-	listint_t *tortoise, *hare;
-	size_t nodes = 1;
+	listint_t **newlist;
+	size_t i;
 
-	if (head == NULL || head->next == NULL)
-		return (0);
-
-	tortoise = head->next;
-	hare = (head->next)->next;
-
-	while (hare)
+	newlist = malloc(size * sizeof(listint_t *));
+	if (newlist == NULL)
 	{
-		if (tortoise == hare)
-		{
-			tortoise = head;
-			while (tortoise != hare)
-			{
-				nodes++;
-				tortoise = tortoise->next;
-				hare = hare->next;
-			}
-
-			tortoise = tortoise->next;
-			while (tortoise != hare)
-			{
-				nodes++;
-				tortoise = tortoise->next;
-			}
-
-			return (nodes);
-		}
-
-		tortoise = tortoise->next;
-		hare = (hare->next)->next;
+		free(list);
+		exit(98);
 	}
+	for (i = 0; i < size - 1; i++)
 
-	return (0);
+		newlist[i] = list[i];
+	newlist[i] = new;
+	free(list);
+
+	return (newlist);
 }
-
 /**
- * free_listint_safe - Frees a listint_t list safely (ie.
- *                     can free lists containing loops)
- * @h: A pointer to the address of
- *     the head of the listint_t list.
- *
- * Return: The size of the list that was freed.
- *
- * Description: The function sets the head to NULL.
+ * free_listint_safe - frees a listint_t linked list.
+ * @head: double pointer to the start of the list
+ * Return: the number of nodes in the list
  */
-size_t free_listint_safe(listint_t **h)
+size_t free_listint_safe(listint_t **head)
 {
-	listint_t *tmp;
-	size_t nodes, index;
 
-	nodes = looped_listint_count(*h);
+	size_t i, num = 0;
 
-	if (nodes == 0)
+	listint_t **list = NULL;
+	listint_t *next;
+
+
+	if (head == NULL || *head == NULL)
+
+		return (num);
+
+	while (*head != NULL)
 	{
-		for (; h != NULL && *h != NULL; nodes++)
+		for (i = 0; i < num; i++)
 		{
-			tmp = (*h)->next;
-			free(*h);
-			*h = tmp;
+			if (*head == list[i])
+			{
+				*head = NULL;
+				free(list);
+
+				return (num);
+			}
 		}
+		num++;
+		list = _ra(list, num, *head);
+		next = (*head)->next;
+		free(*head);
+		*head = next;
+
 	}
+	free(list);
 
-	else
-	{
-		for (index = 0; index < nodes; index++)
-		{
-			tmp = (*h)->next;
-			free(*h);
-			*h = tmp;
-		}
-
-		*h = NULL;
-	}
-
-	h = NULL;
-
-	return (nodes);
+	return (num);
 }
